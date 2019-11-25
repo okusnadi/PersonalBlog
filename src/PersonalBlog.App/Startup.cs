@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,6 +47,14 @@ namespace PersonalBlog.App
             services.AddScoped<AuthenticationStateProvider, SignInService>();
             services.AddScoped<IJsonWebTokenService, JsonWebTokenService>();
             services.AddScoped<IAuthService, SignInService>();
+
+            //initialize database
+            using (var scope=services.BuildServiceProvider().CreateScope())
+            {
+                var database= scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+
+                database.Database.EnsureCreated();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
