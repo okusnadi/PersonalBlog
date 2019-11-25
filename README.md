@@ -9,8 +9,8 @@ This product is made by **.NET CORE 3.0 Blazor Server-Side** for **Single User O
 * Bootstrap 4.3.x
 * Visual Studio 2019 for Solution
 
-# Change Log(v1.0-beta)
-* **1.0-beta**
+# Change Log(v0.1)
+* **0.1**
   - Create/Update the post
   - Configure your application
 
