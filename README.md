@@ -14,8 +14,9 @@ This product is made by **.NET CORE 3.0 Blazor Server-Side** for **Single User O
 Click `F5` to run the solution.
 
 ### Publish
-Using the command below to publish application
+Using the command bellow to publish application
 > dotnet publish -o "your output path" -configuration release
 
-or you can just download the [release/release_1.0-beta.zip](release package here)
+and use the command to run this application after publish
+> dotnet PersonalBlog.App
 
