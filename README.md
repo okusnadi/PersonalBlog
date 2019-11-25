@@ -9,6 +9,12 @@ This product is made by **.NET CORE 3.0 Blazor Server-Side** for **Single User O
 * Bootstrap 4.3.x
 * Visual Studio 2019 for Solution
 
+# Change Log(v1.0-beta)
+* **1.0-beta**
+  - Create/Update the post
+  - Configure your application
+
+
 # Getting Start
 ### Using Solution by VS2019
 Click `F5` to run the solution.
@@ -19,4 +25,20 @@ Using the command bellow to publish application
 
 and use the command to run this application after publish
 > dotnet PersonalBlog.App
+
+### Modify `appsettings.json` to configure your application
+Open the `appsettings.json` in the root path, you will see the json format like this:
+```json
+"BlogSettings": {
+    "Title": "PersnalBlog", //The title of blog
+    "Description": "A personal blog by .NET CORE   Blazor.",//The description of blog
+    "Categories": [ //the categories while edit post
+      "Ungroup"
+    ],
+    "UserName": "admin", //username of admin
+    "Password": "123456",//password of admin
+    "AppSecret": "oi23intf0924hgfowirgw0293rf" // secret key for jwt authentication, do not update!!!
+  }
+```
+**Restart application after save changes**
 
