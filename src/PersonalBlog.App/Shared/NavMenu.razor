@@ -1,0 +1,27 @@
+﻿
+@inject IOptions<BlogSettings> _blogSettings
+
+<header class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/">@_blogSettings.Value.Title</a>
+    <ul class="navbar-nav ml-md-auto">
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        @context.User.Identity.Name
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/SignOut" class="nav-link">
+                        SignOut
+                    </a>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Login">Login</a>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+</header>

@@ -1,0 +1,35 @@
+﻿@page "/Detail/{id}"
+
+<section class="row">
+    <div class="col-12">
+        <Breadcrumb  CrumbsAction="@(list=> {
+                                         list.Add("Detail", "");
+                                         list.Add(Model.Title,"");
+                                     })" />
+        <h2>@Model.Title</h2>
+        <hr />
+        @(new MarkupString(Markdown.ToHtml(Model.Content, pipeline)))
+    </div>
+</section>
+
+@inject BlogService _blogService
+@inject NavigationManager _navigationManager
+@functions {
+    [Parameter]
+    public string Id { get; set; }
+
+    Post Model { get; set; }
+
+    
+    MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSyntaxHighlighting().Build();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _blogService.CrudServiceProvider.FindAsync<Post>(Id);
+        if (Model == null)
+        {
+            _navigationManager.NavigateTo("/404");
+            return;
+        }
+    }
+}

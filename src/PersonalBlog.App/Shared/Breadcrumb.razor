@@ -1,0 +1,31 @@
+﻿
+@inject IOptions<BlogSettings> _blogSettings
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        @foreach (var item in List)
+        {
+            <li class="breadcrumb-item">
+        <a href="@(item.Value)">@item.Key</a>
+            </li>
+        }
+    </ol>
+</nav>
+
+@functions{
+    /// <summary>
+    /// Gets or sets the list of breadcrumbs, the key represents text to display & the value represents the link.
+    /// </summary>
+    [Parameter]
+    public IDictionary<string, string> List { get; set; } = new Dictionary<string, string>();
+
+    [Parameter]
+    public Action<IDictionary<string, string>> CrumbsAction { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        CrumbsAction?.Invoke(List);
+    }
+}

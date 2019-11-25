@@ -1,0 +1,28 @@
+﻿@page "/"
+@namespace PersonalBlog.App.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject Microsoft.Extensions.Options.IOptions<BlogSettings> _setting
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@_setting.Value.Title</title>
+    <meta name="description" content="@_setting.Value.Description"/>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>
+        @(await Html.RenderComponentAsync<App>(RenderMode.Server))
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="~/scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/app.js"></script>
+</body>
+</html>

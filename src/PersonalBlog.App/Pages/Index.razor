@@ -1,0 +1,91 @@
+﻿@page "/"
+@attribute [AllowAnonymous]
+
+<a href="/Edit" class="btn btn-success">New Post</a>
+<section class="row mt-3">
+    <div class="col-12">
+        @if (_posts.Any())
+        {
+        <ul class="list-group">
+            @foreach (var item in _posts)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-10">
+                            <h4><a href="/Detail/@item.Id">@item.Title</a></h4>
+                        </div>
+                        <div class="col-2">
+                            <AuthorizeView>
+                                <Authorized>
+                                    <a href="/Edit/@item.Id" title="edit"><i class="fa fa-pencil" /></a>
+                                    <a href="#" title="delete" @onclick="@((e) => ShowModalAsync(e, item.Id))"><i class="fa fa-trash" /></a>
+                                </Authorized>
+                            </AuthorizeView>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        }
+        else
+        {
+            <div class="text-muted text-center border-top pt-2">
+                <h3>Sorry, There is nothing here...</h3>
+            </div>
+        }
+    </div>
+</section>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                Are you sure to do this action?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" @onclick="@(e=>OnDeleteAsync(e))">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@inject BlogService _blogService
+@inject IJSRuntime _js
+@inject NavigationManager _nagigationManager
+@functions{
+    List<Post> _posts;
+
+    string _deletingId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _posts = await _blogService.GetPostsAsync();
+    }
+
+    async Task OnDeleteAsync(MouseEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_deletingId))
+        {
+            return;
+        }
+
+        var rows = await _blogService.CrudServiceProvider.DeleteAsync<Post>(_deletingId);
+        if (rows == 0)
+        {
+            await _js.InvokeVoidAsync("alert", "Delete failed");
+            return;
+        }
+        await OnInitializedAsync();
+        this.StateHasChanged();
+        _deletingId = string.Empty;
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal", "hide");
+    }
+
+    async Task ShowModalAsync(MouseEventArgs e, string id)
+    {
+        _deletingId = id;
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal", "show");
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,60 @@
+﻿@page "/login"
+@attribute [AllowAnonymous]
+    <div class="row">
+        <div class="col-3 offset-4 border p-3">
+            <h2 class="text-center">Login</h2>
+            <hr />
+            <EditForm Model="model" OnValidSubmit="@OnLoginAsync">
+                <DataAnnotationsValidator />
+                @if (!string.IsNullOrWhiteSpace(message))
+                {
+                    <div class="alert alert-danger text-center">
+                        <h4>@message</h4>
+                    </div>
+                }
+                <div class="form-group">
+                    <InputText class="form-control" @bind-Value="model.Account" placeholder="Account" />
+                    <ValidationMessage For="(()=>model.Account)" class="text-danger" />
+                </div>
+                <div class="form-group">
+                    <InputText type="password" class="form-control" @bind-Value="model.Password" placeholder="Password" />
+                    <ValidationMessage For="(()=>model.Account)" class="text-danger" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Login
+                    </button>
+                </div>
+
+            </EditForm>
+        </div>
+    </div>
+@inject NavigationManager _nagigationManager
+@inject IAuthService _authenticationService
+
+@functions{
+
+        string message;
+        LoginViewModel model = new LoginViewModel();
+
+    class LoginViewModel
+    {
+        [Required]
+        public string Account { get; set; }
+        [Required]
+        public string Password { get; set; }
+    }
+
+    async Task OnLoginAsync()
+    {
+        var result= await _authenticationService.PasswordSignInAsync(model.Account, model.Password);
+        if (result == Microsoft.AspNetCore.Identity.SignInResult.Success)
+        {
+            _nagigationManager.NavigateTo("/",true);
+            return;
+        }
+        
+            message = "Account & Password invalid";
+            StateHasChanged();
+    }
+}
