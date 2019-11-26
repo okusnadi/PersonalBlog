@@ -9,7 +9,12 @@ This product is made by **.NET CORE 3.0 Blazor Server-Side** for **Single User O
 * Bootstrap 4.3.x
 * Visual Studio 2019 for Solution
 
-# Change Log(v0.1)
+# Change Log(v0.2)
+* **0.2**
+    - [add]Category maintainance
+    - [add]System maintainance
+    - [add]Localization function, English only now
+    - [update]all pages
 * **0.1**
   - Create/Update the post
   - Configure your application
