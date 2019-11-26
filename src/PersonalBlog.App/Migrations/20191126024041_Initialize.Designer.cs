@@ -9,7 +9,7 @@ using PersonalBlog.App.Data;
 namespace PersonalBlog.App.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    [Migration("20191125024941_Initialize")]
+    [Migration("20191126024041_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,10 +24,9 @@ namespace PersonalBlog.App.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(256);
 
-                    b.Property<string>("Category")
+                    b.Property<string>("CategoryId")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(100);
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -45,9 +44,42 @@ namespace PersonalBlog.App.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(128);
 
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("PersonalBlog.App.Data.PostCategory", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(60);
+
+                    b.Property<int>("SortNo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("PersonalBlog.App.Data.Post", b =>
+                {
+                    b.HasOne("PersonalBlog.App.Data.PostCategory", "Category")
+                        .WithMany("Posts")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,9 +1,9 @@
 ﻿
-@inject IOptions<BlogSettings> _blogSettings
+@inject ISettingManager _settingManager
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/">@_settingManager.GetSystemSetting().Title</a></li>
         @foreach (var item in List)
         {
             <li class="breadcrumb-item">
@@ -15,7 +15,7 @@
 
 @functions{
     /// <summary>
-    /// Gets or sets the list of breadcrumbs, the key represents text to display & the value represents the link.
+    /// Gets or sets the list of breadcrumbs, the key represents text to display and the value represents the link.
     /// </summary>
     [Parameter]
     public IDictionary<string, string> List { get; set; } = new Dictionary<string, string>();

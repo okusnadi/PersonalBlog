@@ -1,8 +1,17 @@
 ﻿
-@inject IOptions<BlogSettings> _blogSettings
+@inject ISettingManager _settingManager
+@inject BlogService _blogService
 
 <header class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/">@_blogSettings.Value.Title</a>
+    <a class="navbar-brand" href="/">@_settingManager.GetSystemSetting().Title</a>
+    <ul class="navbar-nav">
+        @foreach (var category in Categories)
+        {
+            <li class="nav-item">
+                <a class="nav-link" href="/Category/@(category.Name)">@(category.Name)</a>
+            </li>
+        }
+    </ul>
     <ul class="navbar-nav ml-md-auto">
         <AuthorizeView>
             <Authorized>
@@ -12,16 +21,36 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="/Categories" class="nav-link">
+                        <i class="fa fa-list" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Setting" class="nav-link">
+                        <i class="fa fa-cogs" />
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="/SignOut" class="nav-link">
-                        SignOut
+                        @Language.Page_SignOut
                     </a>
                 </li>
             </Authorized>
             <NotAuthorized>
                 <li class="nav-item">
-                    <a class="nav-link" href="/Login">Login</a>
+                    <a class="nav-link" href="/Login">@Language.Page_Login</a>
                 </li>
             </NotAuthorized>
         </AuthorizeView>
     </ul>
 </header>
+
+
+@functions{
+    public IEnumerable<PostCategory> Categories { get; set; } = new HashSet<PostCategory>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await _blogService.GetPostCategoriesAsync();
+    }
+}

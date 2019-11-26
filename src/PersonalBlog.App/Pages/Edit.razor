@@ -7,7 +7,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h2>Edit</h2>
+            <h2></h2>
             <hr />
         </div>
     </div>
@@ -19,23 +19,23 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-2">
-                            <InputSelect @bind-Value="model.Category" class="form-control">
+                            <InputSelect @bind-Value="model.CategoryId" class="form-control">
                                 <option value="">--Categories--</option>
                                 @foreach (var item in _categories)
                                 {
-                                    <option value="@item">@item</option>
+                                    <option value="@item.Id">@item.Name</option>
                                 }
                             </InputSelect>
                         </div>
                         <div class="col-8">
-                            <InputText class="form-control" @bind-Value="model.Title" placeholder="Please enter your title" />
+                            <InputText class="form-control" @bind-Value="model.Title" placeholder="@Language.Input_Post_Title_Placeholder" />
                         </div>
                         <div class="col-2">
                             <button type="submit" class="btn btn-primary">
-                                Submit
+                                @Language.Button_Submit
                             </button>
                             <button class="btn btn-link" @onclick="GoBack">
-                                Back
+                                @Language.Button_Back
                             </button>
                         </div>
                     </div>
@@ -43,29 +43,32 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
-                            <InputTextArea class="form-control" @bind-Value="model.Content" @oninput="TransformMarkdown" placeholder="Please write your content here...Markdown Support Only!!!"  @attributes="@Attibutes"/>
+                            <InputTextArea class="form-control" @bind-Value="model.Content" @oninput="TransformMarkdown" placeholder="@Language.Input_Post_Content_Placeholder"  @attributes="@Attibutes"/>
 
                         </div>
                         <div class="col-6 border pt-1 pl-2 pr-2 bg-light" style="height:@height;overflow-y:scroll">
-                            @marktext
+                            @(new MarkupString(marktext))
                         </div>
                     </div>
                 </div>
             </EditForm>
         </div>
     </div>
+
+
 @inject NavigationManager _navigationManager
 @inject BlogService _blogService
-@inject IOptions<BlogSettings> _blogSettings
 @functions{
-    string height = "600px";
-    MarkupString marktext;
+    private string _pageTitle;
 
-    private string[] _categories => _blogSettings.Value.Categories;
+    private string height = "600px";
 
-    Post model = new Post();
+    private string marktext;
 
-    MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSyntaxHighlighting().Build();
+    private IEnumerable<PostCategory> _categories;
+
+    private Post model = new Post();
+
 
 
     IDictionary<string, object> Attibutes => new Dictionary<string, object>
@@ -80,7 +83,7 @@
     {
         if (!string.IsNullOrEmpty(Id))
         {
-            model = await _blogService.CrudServiceProvider.FindAsync<Post>(Id);
+            model = await _blogService.FindAsync<Post>(Id);
 
             if (model == null)
             {
@@ -88,9 +91,15 @@
                 return;
             }
 
-            var html = Markdown.ToHtml(model.Content, pipeline);
-            marktext = new MarkupString(html);
+            marktext = Markdown.ToHtml(model.Content, Startup.Pipeline);
+
+            _pageTitle = Language.Page_Edit;
         }
+        else
+        {
+            _pageTitle = Language.Page_Create;
+        }
+        _categories = await _blogService.GetPostCategoriesAsync();
     }
 
 
@@ -100,13 +109,11 @@
 
         try
         {
-            var html = Markdown.ToHtml(value, pipeline);
-
-            marktext = new MarkupString(html);
+            marktext = Markdown.ToHtml(value, Startup.Pipeline);
         }
         catch (Exception ex)
         {
-            marktext =new MarkupString(value);
+            marktext =value;
         }
         this.StateHasChanged();
     }
@@ -118,7 +125,7 @@
 
     async Task OnSubmitAsync()
     {
-        var rows = await _blogService.CrudServiceProvider.CreateAsync(model);
+        var rows = await _blogService.CreateAsync(model);
         GoBack();
     }
 }

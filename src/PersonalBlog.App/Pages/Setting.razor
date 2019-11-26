@@ -1,0 +1,107 @@
+﻿@page "/Setting"
+
+
+<div class="row">
+    <div class="col-5 offset-4">
+        <h2>@Language.Page_Setting</h2>
+        <hr />
+        <EditForm Model="model" OnValidSubmit="@OnSubmit">
+            
+            @if (result != null)
+            {
+                if (result.IsSucceeded)
+                {
+                <div class="alert alert-success">
+                    <i class="fa fa-check-circle"/> @Language.Message_SubmitSuccess
+                </div>
+                }
+                else
+                {
+                <div class="alert alert-danger">
+                    <h4>@Language.Message_SubmitError</h4>
+                    <ul>
+                        @foreach (var error in result.Errors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                </div>
+                }
+            }
+            <h4>
+                @Language.Page_Setting_Site
+            </h4>
+            <hr />
+            <div class="form-group">
+                <InputText class="form-control" @bind-Value="model.Title" placeholder="@nameof(model.Title)"/>
+            </div>
+            <div class="form-group">
+                <InputText class="form-control" @bind-Value="model.Description" placeholder="@nameof(model.Description)"/>
+            </div>
+            <div class="form-group">
+                <InputText class="form-control" @bind-Value="model.Culture" placeholder="@nameof(model.Culture)"/>
+            </div>
+
+            <h4>
+                @Language.Page_Setting_Admin
+            </h4>
+            <hr />
+            <div class="form-group">
+                <InputText class="form-control" @bind-Value="model.UserName" placeholder="@nameof(model.UserName)"/>
+            </div>
+            <div class="form-group">
+                <InputText class="form-control" @bind-Value="model.Password" placeholder="@nameof(model.Password)"/>
+            </div>
+            <div class="form-group">
+                <InputText class="form-control" @bind-Value="model.AppSecret" placeholder="@nameof(model.AppSecret)"/>
+            </div>
+
+            <hr />
+            <div class="form-group">
+                <button class="btn btn-primary btn-block btn-lg" type="submit">
+                    @Language.Button_Submit
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@using System.Text.Json.Serialization
+@using System.Text.Json
+@using System.Text
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using SAFe.Infrastructure
+
+
+@inject ISettingManager _settingManager
+@inject IWebHostEnvironment _environment
+
+@functions{
+    SystemSetting model = new SystemSetting();
+
+    InvokeResult result;
+
+    protected override void OnInitialized()
+    {
+        model = _settingManager.GetSystemSetting();
+    }
+
+    void OnSubmit()
+    {
+        var errors = new List<string>();
+
+        try
+        {
+            _settingManager.Set(model);
+            result = InvokeResult.Success();
+        }
+        catch (Exception ex)
+        {
+            errors.Add(ex.Message);
+            result = InvokeResult.Failed(errors.ToArray());
+        }
+    }
+}
+}

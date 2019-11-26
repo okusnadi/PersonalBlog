@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using System.Net.Http;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using Blazored.LocalStorage;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -14,16 +11,18 @@ namespace PersonalBlog.App.Services
     using System.IdentityModel.Tokens.Jwt;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Logging;
+    using PersonalBlog.App.Settings;
+
     public class SignInService : AuthenticationStateProvider,IAuthService
     {
         private readonly ILocalStorageService  _localStorageService;
         private readonly IJsonWebTokenService _jsonWebTokenService;
         private readonly ILogger<SignInService> _logger;
-        private readonly BlogSettings _options;
+        private readonly SystemSetting _systemSetting;
 
 
         public SignInService(
-            IOptions<BlogSettings> options,
+            ISettingManager settingManager,
             ILocalStorageService localStorageService,
             IJsonWebTokenService jsonWebTokenService,
             ILogger<SignInService> logger
@@ -32,7 +31,7 @@ namespace PersonalBlog.App.Services
             this._localStorageService = localStorageService;
             this._jsonWebTokenService = jsonWebTokenService;
             this._logger = logger;
-            this._options = options.Value;
+            this._systemSetting = settingManager.GetSystemSetting();
         }
 
        internal const string STORAGE_KEY = "Auth_Token";
@@ -53,9 +52,9 @@ namespace PersonalBlog.App.Services
 
                 principal = handler.ValidateToken(token, new TokenValidationParameters
                 {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.AppSecret)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_systemSetting.AppSecret)),
                     ValidIssuer = "STS",
-                    ValidAudience = _options.UserName
+                    ValidAudience = _systemSetting.UserName
                 },out SecurityToken securityToken);
             }catch(Exception ex)
             {
@@ -79,7 +78,7 @@ namespace PersonalBlog.App.Services
                 throw new ArgumentNullException(nameof(password));
             }
 
-            if(!_options.UserName.Equals(userName) && !_options.Password.Equals(password))
+            if(!_systemSetting.UserName.Equals(userName) && !_systemSetting.Password.Equals(password))
             {
                 return SignInResult.Failed;
             }

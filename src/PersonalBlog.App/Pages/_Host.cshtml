@@ -1,15 +1,17 @@
 ﻿@page "/"
 @namespace PersonalBlog.App.Pages
+@using PersonalBlog.App.Settings
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@inject Microsoft.Extensions.Options.IOptions<BlogSettings> _setting
+
+@inject ISettingManager _settingManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@_setting.Value.Title</title>
-    <meta name="description" content="@_setting.Value.Description"/>
+    <title>@_settingManager.GetSystemSetting().Title</title>
+    <meta name="description" content="@_settingManager.GetSystemSetting().Description" />
     <base href="~/" />
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link href="~/css/font-awesome.min.css" rel="stylesheet" />

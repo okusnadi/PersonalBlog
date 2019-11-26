@@ -20,6 +20,8 @@
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.18.0" />
     <PackageReference Include="Markdig.SyntaxHighlighting" Version="1.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.0.1" />
@@ -30,6 +32,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SAFe.Infrastructure" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Cultures\Language.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Cultures\Language.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

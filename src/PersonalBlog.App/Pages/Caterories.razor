@@ -1,0 +1,186 @@
+﻿@page "/Categories"
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <h3>@Language.Page_Categories</h3>
+        <hr />
+        <a class="btn btn-success text-light" @onclick="@(e=>ShowEditModalAsync(e))"><i class="fa fa-plus" /> @Language.Message_NewCategory</a>
+        <table class="table table-hover table-bordered mt-3">
+            <thead>
+                <tr>
+                   @* <th width="400px" class="text-center">@Language.Message_Category_Table_Id</th>*@
+                    <th width="100px" class="text-center">@Language.Message_Category_Table_SortNo</th>
+                    <th >@Language.Message_Category_Table_Name</th>
+                    <th width="80" class="text-center">@Language.Message_Table_Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!_categories.Any())
+                {
+                    <tr><td colspan="4" class="text-center text-muted">@Language.Message_NoData</td></tr>
+                }
+                else
+                {
+                    foreach (var item in _categories)
+                    {
+            <tr>
+               @* <td class="text-center">@item.Id</td>*@
+                <td class="text-center">@item.SortNo</td>
+                <td>@item.Name</td>
+                <td class="text-center">
+                    <a href="javascript:;" title="@Language.Message_Edit" @onclick="@(e => ShowEditModalAsync(e, item.Id))"><i class="fa fa-pencil" /></a>
+                    <a href="javascript:;" title="@Language.Message_Delete" @onclick="@((e) => ShowConfirmModalAsync(e, item.Id))"><i class="fa fa-trash" /></a>
+                </td>
+            </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_edit">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @_modalTitle
+            </div>
+            <EditForm Model="model" OnValidSubmit="@OnSubmitAsync">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            @if (!string.IsNullOrEmpty(_error))
+                            {
+                                <div class="alert alert-danger">@_error</div>
+                            }
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="alert alert-danger" />
+                            <div class="form-group">
+                                <InputText class="form-control" @bind-Value="model.Name" placeholder="@Language.Input_Category_Name_Placeholder" />
+                            </div>
+                            <div class="form-group">
+                                <InputNumber class="form-control" @bind-Value="@model.SortNo"  style="width:60px" /> <span class="text-sm-left text-muted">@Language.Input_Category_SortNo_Placeholder</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">@Language.Button_Close</button>
+                    <button type="submit" class="btn btn-primary">@Language.Button_Submit</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_confirm">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                @Language.Message_ConfirmAction
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal">@Language.Button_No</button>
+                <button type="button" class="btn btn-primary" @onclick="@(e=>OnDeleteAsync(e))">@Language.Button_Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@inject BlogService _blogService
+@inject NavigationManager _navigationManager
+@inject IJSRuntime _js
+
+@functions {
+
+    private IEnumerable<PostCategory> _categories = new List<PostCategory>();
+    private string _modalTitle;
+    private string _error;
+    string _deletingId;
+
+    private PostCategory model = new PostCategory();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await _blogService.GetPostCategoriesAsync();
+        model = new PostCategory();
+    }
+
+    async Task ShowEditModalAsync(MouseEventArgs e, string id = default)
+    {
+        if (!string.IsNullOrWhiteSpace(id))
+        {
+            model = await _blogService.FindAsync<PostCategory>(id);
+            if (model == null)
+            {
+                _navigationManager.NavigateTo("/404");
+                return;
+            }
+
+            _modalTitle = Language.Page_Edit;
+        }
+        else
+        {
+            _modalTitle = Language.Page_Create;
+        }
+
+
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal_edit", "show");
+    }
+
+    async Task OnSubmitAsync()
+    {
+        var entity = await _blogService.FindAsync<PostCategory>(model.Id);
+        var rows = 0;
+        if (entity == null)
+        {
+            rows = await _blogService.CreateAsync(model);
+        }
+        else
+        {
+            rows = await _blogService.UpdateAsync<PostCategory>(e =>
+            {
+                e.Name = model.Name;
+                e.SortNo = model.SortNo;
+            }, model.Id);
+        }
+
+        if (rows == 0)
+        {
+            _error = Language.Message_SubmitError;
+        }
+        else
+        {
+            await OnInitializedAsync();
+            await _js.InvokeVoidAsync("dialog.showModal", "#modal_edit", "hide");
+        }
+    }
+
+    async Task OnDeleteAsync(MouseEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_deletingId))
+        {
+            return;
+        }
+
+        var rows = await _blogService.DeleteAsync<PostCategory>(_deletingId);
+        if (rows == 0)
+        {
+            await _js.InvokeVoidAsync("alert", "Delete failed");
+            return;
+        }
+        await OnInitializedAsync();
+        this.StateHasChanged();
+        _deletingId = string.Empty;
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal_confirm", "hide");
+    }
+
+    async Task ShowConfirmModalAsync(MouseEventArgs e, string id)
+    {
+        _deletingId = id;
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal_confirm", "show");
+        StateHasChanged();
+    }
+}

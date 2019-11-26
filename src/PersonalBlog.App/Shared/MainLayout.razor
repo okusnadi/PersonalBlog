@@ -1,9 +1,26 @@
 ﻿@inherits LayoutComponentBase
-@inject IOptions<BlogSettings> _blogSettings
+@inject ISettingManager _settingManager
 <NavMenu />
 <div class="container-fluid mt-3" style="padding-bottom:50px;">
     @Body
 </div>
-<footer class="mt-5 border-top text-center bg-light pt-3 pb-3  fixed-bottom">
-    @_blogSettings.Value.Title Copryright © 2019 <a href="https://github.com/Michael-Pro/PersonalBlog">https://github.com/Michael-Pro/PersonalBlog</a>
+<footer class="mt-5 border-top text-center bg-light pt-3 pb-3  fixed-bottom ">
+    <ul class="footer">
+        <li>
+            @model.Title
+        </li>
+        <li>
+            Copryright © 2019 - 2020 
+        </li>
+        <li>
+            v@(model.Version)
+        </li>
+        <li>
+            <a href="https://github.com/Michael-Pro/PersonalBlog" target="_blank">Github</a>
+        </li>
+    </ul>
 </footer>
+
+@functions{
+    SystemSetting model => _settingManager.GetSystemSetting();
+}

@@ -1,50 +1,87 @@
 ﻿@page "/"
+@page "/Category/{CategoryName}"
 @attribute [AllowAnonymous]
 
-<a href="/Edit" class="btn btn-success">New Post</a>
+<AuthorizeView>
+    <Authorized>
+        <a href="/Edit" class="btn btn-success">@Language.Message_NewPost</a>
+    </Authorized>
+</AuthorizeView>
 <section class="row mt-3">
     <div class="col-12">
-        @if (_posts.Any())
-        {
-        <ul class="list-group">
-            @foreach (var item in _posts)
+        <h2>
+            @if (string.IsNullOrEmpty(CategoryName))
             {
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="col-10">
-                            <h4><a href="/Detail/@item.Id">@item.Title</a></h4>
+                @Language.Page_Category_All
+            }
+            else
+            {
+                @CategoryName
+            }
+        </h2>
+        @if (_posts != null)
+        {
+            @if (_posts.Any())
+            {
+                <div class="list-group mt-3">
+                    @foreach (var item in _posts)
+                    {
+                    <a href="/Detail/@item.Id" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">[@item.Category.Name]@item.Title</h5>
+                            <small>@item.CreatedTime.ToString("yyyy/MM/dd HH:mm")</small>
                         </div>
-                        <div class="col-2">
+                        <p class="mb-1">
+                            @if (item.Content.Length > 100)
+                            {
+                                @(new MarkupString(Markdown.ToHtml(item.Content.Substring(100), Startup.Pipeline)))
+                            }
+                            else
+                            {
+                                @(new MarkupString(Markdown.ToHtml(item.Content, Startup.Pipeline)));
+                            }
+                        </p>
+                        <div class="small">
+                            <div class="pull-left">
+                                <i class="fa fa-eye" /> @item.ViewCount
+                            </div>
                             <AuthorizeView>
                                 <Authorized>
-                                    <a href="/Edit/@item.Id" title="edit"><i class="fa fa-pencil" /></a>
-                                    <a href="#" title="delete" @onclick="@((e) => ShowModalAsync(e, item.Id))"><i class="fa fa-trash" /></a>
+                                    <div class="pull-right">
+                                        <a href="/Edit/@item.Id" title="@Language.Message_Edit"><i class="fa fa-pencil-square" /></a>
+                                        &nbsp;
+                                        <a href="javascript:;" title="@Language.Message_Delete" @onclick="@((e) => ShowModalAsync(e, item.Id))"><i class="fa fa-trash" /></a>
+                                    </div>
                                 </Authorized>
                             </AuthorizeView>
                         </div>
-                    </div>
-                </li>
+                    </a>
+                    }
+                </div>
             }
-        </ul>
+            else
+            {
+                <div class="text-muted text-center border-top pt-2">
+                    <h3>@Language.Message_NoData</h3>
+                </div>
+            }
         }
         else
         {
-            <div class="text-muted text-center border-top pt-2">
-                <h3>Sorry, There is nothing here...</h3>
-            </div>
+            <div class="text-muted">Loading...</div>
         }
-    </div>
+        </div>
 </section>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                Are you sure to do this action?
+                @Language.Message_ConfirmAction
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-info" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" @onclick="@(e=>OnDeleteAsync(e))">Yes</button>
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal">@Language.Button_No</button>
+                <button type="button" class="btn btn-primary" @onclick="@(e=>OnDeleteAsync(e))">@Language.Button_Yes</button>
             </div>
         </div>
     </div>
@@ -58,9 +95,20 @@
 
     string _deletingId;
 
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public string CategoryName { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _posts = await _blogService.GetPostsAsync();
+        if (firstRender)
+        {
+            _posts = await _blogService.GetPostsAsync(CategoryName);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _posts = await _blogService.GetPostsAsync(CategoryName);
     }
 
     async Task OnDeleteAsync(MouseEventArgs e)
@@ -70,13 +118,19 @@
             return;
         }
 
-        var rows = await _blogService.CrudServiceProvider.DeleteAsync<Post>(_deletingId);
-        if (rows == 0)
+        try
         {
-            await _js.InvokeVoidAsync("alert", "Delete failed");
-            return;
+            var rows = await _blogService.DeleteAsync<Post>(_deletingId);
+            if (rows == 0)
+            {
+                await _js.InvokeVoidAsync("alert", "Delete failed");
+                return;
+            }
+        }catch(Exception ex)
+        {
+
         }
-        await OnInitializedAsync();
+        await OnAfterRenderAsync(true);
         this.StateHasChanged();
         _deletingId = string.Empty;
         await _js.InvokeVoidAsync("dialog.showModal", "#modal", "hide");

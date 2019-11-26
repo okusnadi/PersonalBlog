@@ -2,34 +2,104 @@
 
 <section class="row">
     <div class="col-12">
-        <Breadcrumb  CrumbsAction="@(list=> {
-                                         list.Add("Detail", "");
-                                         list.Add(Model.Title,"");
+        <Breadcrumb CrumbsAction="@(list=> {
+                                         list.TryAdd(Model.Category.Name, $"/Category/{Model.Category.Name}");
+                                         list.TryAdd(Model.Title,$"/Detail/{Model.Id}");
                                      })" />
-        <h2>@Model.Title</h2>
+        <h2>[@(Model.Category.Name)]@(Model.Title)</h2>
         <hr />
-        @(new MarkupString(Markdown.ToHtml(Model.Content, pipeline)))
+        <small class="text-muted">
+            <i class="fa fa-eye" /> @(Model.ViewCount)
+            &nbsp;&nbsp;
+            |
+            &nbsp;&nbsp;
+            <i class="fa fa-calendar" /> @Model.CreatedTime.ToString("yyyy-MM-dd HH:mm")
+
+            <AuthorizeView>
+                <Authorized>
+                    |
+                    &nbsp;&nbsp;
+                    <a href="/Edit/@Model.Id" title="@Language.Message_Edit"><i class="fa fa-pencil-square" /></a>
+                    &nbsp;
+                    <a href="javascript:;" title="@Language.Message_Delete" @onclick="@((e) => ShowModalAsync(e, Model.Id))"><i class="fa fa-trash" /></a>
+                </Authorized>
+            </AuthorizeView>
+        </small>
+        <div class="mt-3">
+            @(new MarkupString(Markdown.ToHtml(Model.Content, Startup.Pipeline)))
+        </div>
     </div>
 </section>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                @Language.Message_ConfirmAction
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal">@Language.Button_No</button>
+                <button type="button" class="btn btn-primary" @onclick="@(e=>OnDeleteAsync(e))">@Language.Button_Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @inject BlogService _blogService
 @inject NavigationManager _navigationManager
+@inject IJSRuntime _js
 @functions {
     [Parameter]
     public string Id { get; set; }
 
     Post Model { get; set; }
+    string _deletingId;
 
-    
+
     MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSyntaxHighlighting().Build();
 
     protected override async Task OnInitializedAsync()
     {
-        Model = await _blogService.CrudServiceProvider.FindAsync<Post>(Id);
+        Model = await _blogService.FindAsync<Post>(Id);
         if (Model == null)
         {
             _navigationManager.NavigateTo("/404");
             return;
         }
+
+        Model.Category = await _blogService.FindAsync<PostCategory>(Model.CategoryId);
+
+        await _blogService.UpdateViewCount(Id);
+    }
+
+    async Task OnDeleteAsync(MouseEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_deletingId))
+        {
+            return;
+        }
+        try
+        {
+            var rows = await _blogService.DeleteAsync<Post>(_deletingId);
+            if (rows == 0)
+            {
+                await _js.InvokeVoidAsync("alert", "Delete failed");
+                return;
+            }
+        }
+        catch
+        {
+
+        }
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal", "hide");
+
+        _navigationManager.NavigateTo("/",true);
+    }
+
+    async Task ShowModalAsync(MouseEventArgs e, string id)
+    {
+        _deletingId = id;
+        await _js.InvokeVoidAsync("dialog.showModal", "#modal", "show");
+        StateHasChanged();
     }
 }

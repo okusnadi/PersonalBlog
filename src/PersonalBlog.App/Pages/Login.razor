@@ -2,23 +2,23 @@
 @attribute [AllowAnonymous]
     <div class="row">
         <div class="col-3 offset-4 border p-3">
-            <h2 class="text-center">Login</h2>
+            <h2 class="text-center">@Language.Page_Login</h2>
             <hr />
             <EditForm Model="model" OnValidSubmit="@OnLoginAsync">
                 <DataAnnotationsValidator />
                 @if (!string.IsNullOrWhiteSpace(message))
                 {
                     <div class="alert alert-danger text-center">
-                        <h4>@message</h4>
+                        @message
                     </div>
                 }
                 <div class="form-group">
-                    <InputText class="form-control" @bind-Value="model.Account" placeholder="Account" />
-                    <ValidationMessage For="(()=>model.Account)" class="text-danger" />
+                    <InputText class="form-control" @bind-Value="model.UserName" placeholder="@Language.Field_Login_UserName" />
+                    <ValidationMessage For="(()=>model.UserName)" class="text-danger" />
                 </div>
                 <div class="form-group">
-                    <InputText type="password" class="form-control" @bind-Value="model.Password" placeholder="Password" />
-                    <ValidationMessage For="(()=>model.Account)" class="text-danger" />
+                    <InputText type="password" class="form-control" @bind-Value="model.Password" placeholder="@Language.Field_Login_Password" />
+                    <ValidationMessage For="(()=>model.UserName)" class="text-danger" />
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block">
@@ -39,22 +39,25 @@
 
     class LoginViewModel
     {
-        [Required]
-        public string Account { get; set; }
-        [Required]
+        [Display(ResourceType=typeof(Language),Name=nameof(Language.Field_Login_UserName))]
+        [Required(ErrorMessageResourceType=typeof(Language),ErrorMessageResourceName=nameof(Language.Validate_Field_Required))]
+        public string UserName { get; set; }
+
+        [Display(ResourceType=typeof(Language),Name=nameof(Language.Field_Login_UserName))]
+        [Required(ErrorMessageResourceType=typeof(Language),ErrorMessageResourceName=nameof(Language.Validate_Field_Required))]
         public string Password { get; set; }
     }
 
     async Task OnLoginAsync()
     {
-        var result= await _authenticationService.PasswordSignInAsync(model.Account, model.Password);
+        var result= await _authenticationService.PasswordSignInAsync(model.UserName, model.Password);
         if (result == Microsoft.AspNetCore.Identity.SignInResult.Success)
         {
             _nagigationManager.NavigateTo("/",true);
             return;
         }
         
-            message = "Account & Password invalid";
+            message = Language.Message_Login_Invalid;
             StateHasChanged();
     }
 }
