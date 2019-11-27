@@ -78,7 +78,7 @@ namespace PersonalBlog.App.Services
                 throw new ArgumentNullException(nameof(password));
             }
 
-            if(!_systemSetting.UserName.Equals(userName) && !_systemSetting.Password.Equals(password))
+            if(!_systemSetting.UserName.Equals(userName) || !_systemSetting.Password.Equals(password))
             {
                 return SignInResult.Failed;
             }
