@@ -1,7 +1,7 @@
 ﻿@page "/login"
 @attribute [AllowAnonymous]
     <div class="row">
-        <div class="col-3 offset-4 border p-3">
+        <div class="p-3 m-auto w-25">
             <h2 class="text-center">@Language.Page_Login</h2>
             <hr />
             <EditForm Model="model" OnValidSubmit="@OnLoginAsync">
@@ -18,10 +18,10 @@
                 </div>
                 <div class="form-group">
                     <InputText type="password" class="form-control" @bind-Value="model.Password" placeholder="@Language.Field_Login_Password" />
-                    <ValidationMessage For="(()=>model.UserName)" class="text-danger" />
+                    <ValidationMessage For="(()=>model.Password)" class="text-danger" />
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
                         Login
                     </button>
                 </div>
@@ -43,7 +43,7 @@
         [Required(ErrorMessageResourceType=typeof(Language),ErrorMessageResourceName=nameof(Language.Validate_Field_Required))]
         public string UserName { get; set; }
 
-        [Display(ResourceType=typeof(Language),Name=nameof(Language.Field_Login_UserName))]
+        [Display(ResourceType=typeof(Language),Name=nameof(Language.Field_Login_Password))]
         [Required(ErrorMessageResourceType=typeof(Language),ErrorMessageResourceName=nameof(Language.Validate_Field_Required))]
         public string Password { get; set; }
     }
