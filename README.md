@@ -9,7 +9,13 @@ This product is made by **.NET CORE 3.0 Blazor Server-Side** for **Single User O
 * Bootstrap 4.3.x
 * Visual Studio 2019 for Solution
 
-# Change Log(v0.2)
+### [Visit the Demo](https://vblog.chinacloudsites.cn/)
+
+# Change Logs(v1.0)
+* **1.0**
+    - [add]Localization Support
+    - [fix]The rest of Bugs
+    - [optimize]Some page layouts
 * **0.2**
     - [add]Category maintainance
     - [add]System maintainance
@@ -29,7 +35,7 @@ Using the command bellow to publish application
 > dotnet publish -o "your output path" -configuration release
 
 and use the command to run this application after publish
-> dotnet PersonalBlog.App
+> dotnet PersonalBlog.App.dll
 
 ### Modify `appsettings.json` to configure your application
 Open the `appsettings.json` in the root path, you will see the json format like this:

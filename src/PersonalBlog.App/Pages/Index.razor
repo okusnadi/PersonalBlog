@@ -2,13 +2,8 @@
 @page "/Category/{CategoryName}"
 @attribute [AllowAnonymous]
 
-<AuthorizeView>
-    <Authorized>
-        <a href="/Edit" class="btn btn-success">@Language.Message_NewPost</a>
-    </Authorized>
-</AuthorizeView>
-<section class="row mt-3">
-    <div class="col-12">
+<section class="row mt-1 mb-3">
+    <div class="col-10">
         <h2>
             @if (string.IsNullOrEmpty(CategoryName))
             {
@@ -19,22 +14,36 @@
                 @CategoryName
             }
         </h2>
+    </div>
+    <div class="col-2 text-right">
+        <AuthorizeView>
+            <Authorized>
+                <a href="/Edit" class="btn btn-success"><i class="fa fa-plus"/> @Language.Message_NewPost</a>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+    <div class="col-12">
         @if (_posts != null)
         {
             @if (_posts.Any())
             {
-                <div class="list-group mt-3">
+                <div class="list-group mt-1">
                     @foreach (var item in _posts)
                     {
                     <a href="/Detail/@item.Id" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">[@item.Category.Name]@item.Title</h5>
+                            <h4 class="mb-1">【@(item.Category.Name)】@(item.Title)
+                            @if (item.IsTop)
+                            {
+                                <span class="badge badge-success">@Language.Field_Top</span>
+                            }
+                            </h4>
                             <small>@item.CreatedTime.ToString("yyyy/MM/dd HH:mm")</small>
                         </div>
-                        <p class="mb-1">
+                        <p class="mt-1 mb-1">
                             @if (item.Content.Length > 100)
                             {
-                                @(new MarkupString(Markdown.ToHtml(item.Content.Substring(100), Startup.Pipeline)))
+                                @(new MarkupString(Markdown.ToHtml(item.Content.Substring(0,100), Startup.Pipeline)))
                             }
                             else
                             {

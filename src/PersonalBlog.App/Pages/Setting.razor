@@ -1,5 +1,5 @@
 ﻿@page "/Setting"
-
+@attribute [Authorize]
 
 <div class="row">
     <div class="col-5 offset-4">
@@ -39,7 +39,10 @@
                 <InputText class="form-control" @bind-Value="model.Description" placeholder="@nameof(model.Description)"/>
             </div>
             <div class="form-group">
-                <InputText class="form-control" @bind-Value="model.Culture" placeholder="@nameof(model.Culture)"/>
+                <InputSelect class="form-control" @bind-Value="model.Culture" placeholder="@nameof(model.Culture)">
+                    <option value="en-us">English</option>
+                    <option value="zh-cn">简体中文</option>
+                    </InputSelect>
             </div>
 
             <h4>
@@ -96,6 +99,11 @@
         {
             _settingManager.Set(model);
             result = InvokeResult.Success();
+
+            var cultureInfo=new System.Globalization.CultureInfo(model.Culture);
+
+            System.Globalization.CultureInfo.CurrentCulture = cultureInfo;
+            System.Globalization.CultureInfo.CurrentCulture = cultureInfo;
         }
         catch (Exception ex)
         {

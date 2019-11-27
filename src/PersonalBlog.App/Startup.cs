@@ -38,7 +38,7 @@ namespace PersonalBlog.App
                 options.DetailedErrors = true;
                 
             });
-
+            services.AddLocalization(options => options.ResourcesPath = "Cultures");
             
 
             services.AddHttpContextAccessor();
@@ -62,7 +62,7 @@ namespace PersonalBlog.App
             {
                 var database= scope.ServiceProvider.GetRequiredService<BlogDbContext>();
 
-                database.Database.EnsureCreated();
+                database.Database.Migrate();
             }
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -83,6 +83,12 @@ namespace PersonalBlog.App
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            var culture = app.ApplicationServices.GetRequiredService<ISettingManager>().GetSystemSetting().Culture;
+
+            app.UseRequestLocalization(new  RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(culture),
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

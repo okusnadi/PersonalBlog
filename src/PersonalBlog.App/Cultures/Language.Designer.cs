@@ -410,5 +410,26 @@ namespace PersonalBlog.App.Cultures {
                 return ResourceManager.GetString("Validate_Field_StringLength", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, You do not have permission.
+        /// </summary>
+        public static string Message_NotAuthorized
+        {
+            get
+            {
+                return ResourceManager.GetString("Message_NotAuthorized", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Top.
+        /// </summary>
+        public static string Field_Top
+        {
+            get
+            {
+                return ResourceManager.GetString("Field_Top", resourceCulture);
+            }
+        }
     }
 }

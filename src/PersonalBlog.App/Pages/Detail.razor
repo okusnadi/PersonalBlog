@@ -1,12 +1,18 @@
 ﻿@page "/Detail/{id}"
-
+@attribute [AllowAnonymous]
 <section class="row">
     <div class="col-12">
         <Breadcrumb CrumbsAction="@(list=> {
                                          list.TryAdd(Model.Category.Name, $"/Category/{Model.Category.Name}");
                                          list.TryAdd(Model.Title,$"/Detail/{Model.Id}");
                                      })" />
-        <h2>[@(Model.Category.Name)]@(Model.Title)</h2>
+        <h2>
+            【@(Model.Category.Name)】@(Model.Title)
+            @if (Model.IsTop)
+            {
+                <span class="badge badge-success">@Language.Field_Top</span>
+            }
+        </h2>
         <hr />
         <small class="text-muted">
             <i class="fa fa-eye" /> @(Model.ViewCount)

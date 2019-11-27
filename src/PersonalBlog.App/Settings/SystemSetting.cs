@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using Newtonsoft.Json;
 
 namespace PersonalBlog.App.Settings
 {
@@ -35,8 +37,9 @@ namespace PersonalBlog.App.Settings
         /// <summary>
         /// Ggets or sets the version.
         /// </summary>
-        public string Version { get; set; }
+        public string Version => Assembly.GetEntryAssembly().GetName().Version.ToString();
 
+        [JsonIgnore]
         public string Name => "System";
 
         public ISetting Initialize() => new SystemSetting

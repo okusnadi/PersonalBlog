@@ -43,6 +43,7 @@ namespace PersonalBlog.App.Data
         /// <summary>
         /// Gets or sets the category id.
         /// </summary>
+        [Display(ResourceType = typeof(Language), Name = nameof(Language.Field_Post_Category_Name))]
         [Required(ErrorMessageResourceType =typeof(Language),ErrorMessageResourceName =nameof(Language.Validate_Field_Required))]
         public string CategoryId { get; set; }
 

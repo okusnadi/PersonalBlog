@@ -9,7 +9,7 @@ namespace PersonalBlog.App.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source=Data/Blog.db")
+            optionsBuilder.UseSqlite($"Data Source=./PersonalBlog.db")
                 ;
         }
 

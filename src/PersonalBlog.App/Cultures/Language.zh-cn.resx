@@ -118,120 +118,126 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Button_Back" xml:space="preserve">
-    <value>Back</value>
+    <value>返回</value>
   </data>
   <data name="Button_Close" xml:space="preserve">
-    <value>Close</value>
+    <value>关闭</value>
   </data>
   <data name="Button_No" xml:space="preserve">
-    <value>No</value>
+    <value>否</value>
   </data>
   <data name="Button_Submit" xml:space="preserve">
-    <value>Submit</value>
+    <value>提交</value>
   </data>
   <data name="Button_Yes" xml:space="preserve">
-    <value>Yes</value>
+    <value>是</value>
   </data>
   <data name="Field_Login_Password" xml:space="preserve">
-    <value>Password</value>
+    <value>密码</value>
   </data>
   <data name="Field_Login_UserName" xml:space="preserve">
-    <value>User Name</value>
+    <value>用户名</value>
   </data>
   <data name="Field_Post_Category_Name" xml:space="preserve">
-    <value>Category Name</value>
+    <value>分类名称</value>
   </data>
   <data name="Field_Post_Content" xml:space="preserve">
-    <value>Post Content</value>
+    <value>文章内容</value>
   </data>
   <data name="Field_Post_Title" xml:space="preserve">
-    <value>Post Title</value>
+    <value>文章标题</value>
+  </data>
+  <data name="Field_Top" xml:space="preserve">
+    <value>置顶</value>
   </data>
   <data name="Input_Category_Name_Placeholder" xml:space="preserve">
-    <value>Name of category</value>
+    <value>分类的名称</value>
   </data>
   <data name="Input_Category_SortNo_Placeholder" xml:space="preserve">
-    <value>The sort number of category from small to large</value>
+    <value>分类排序，从小到大</value>
   </data>
   <data name="Input_Post_Content_Placeholder" xml:space="preserve">
-    <value>Please write your content here...Markdown Support Only!!!</value>
+    <value>你可以在这里写内容，但仅支持 Markdown 语法！！！</value>
   </data>
   <data name="Input_Post_Title_Placeholder" xml:space="preserve">
-    <value>Please enter your title</value>
+    <value>请填写标题</value>
   </data>
   <data name="Message_Category_Table_Id" xml:space="preserve">
-    <value>Id</value>
+    <value>编号</value>
   </data>
   <data name="Message_Category_Table_Name" xml:space="preserve">
-    <value>Name</value>
+    <value>名称</value>
   </data>
   <data name="Message_Category_Table_SortNo" xml:space="preserve">
-    <value>Sort No.</value>
+    <value>排序</value>
   </data>
   <data name="Message_ConfirmAction" xml:space="preserve">
-    <value>Are you sure to do this action?</value>
+    <value>你确定要这样做吗？</value>
   </data>
   <data name="Message_Delete" xml:space="preserve">
-    <value>Delete</value>
+    <value>删除</value>
   </data>
   <data name="Message_Edit" xml:space="preserve">
-    <value>Edit</value>
+    <value>编辑</value>
   </data>
   <data name="Message_Login_Invalid" xml:space="preserve">
-    <value>Login is failed.</value>
+    <value>登录失败</value>
   </data>
   <data name="Message_NewCategory" xml:space="preserve">
-    <value>New Category</value>
+    <value>新分类</value>
   </data>
   <data name="Message_NewPost" xml:space="preserve">
-    <value>New Post</value>
+    <value>新文章</value>
   </data>
   <data name="Message_NoData" xml:space="preserve">
-    <value>Sorry, There is no data here...</value>
+    <value>抱歉，没有任何数据...</value>
+  </data>
+  <data name="Message_NotAuthorized" xml:space="preserve">
+    <value>抱歉，你没有权限访问！</value>
   </data>
   <data name="Message_SubmitError" xml:space="preserve">
-    <value>The submit is invalid.</value>
+    <value>提交出现了错误</value>
   </data>
   <data name="Message_SubmitSuccess" xml:space="preserve">
-    <value>Submit is successful</value>
+    <value>提交成功啦！</value>
   </data>
   <data name="Message_Table_Operation" xml:space="preserve">
-    <value>Operation</value>
+    <value>操作</value>
   </data>
   <data name="Page_Categories" xml:space="preserve">
-    <value>Categories</value>
+    <value>分类</value>
   </data>
   <data name="Page_Category_All" xml:space="preserve">
-    <value>All</value>
+    <value>全部</value>
   </data>
   <data name="Page_Create" xml:space="preserve">
-    <value>Create</value>
+    <value>创建</value>
   </data>
   <data name="Page_Detail" xml:space="preserve">
-    <value>Detail</value>
+    <value>详情</value>
   </data>
   <data name="Page_Edit" xml:space="preserve">
-    <value>Edit</value>
+    <value>编辑</value>
   </data>
   <data name="Page_Login" xml:space="preserve">
-    <value>Login</value>
+    <value>登录</value>
   </data>
   <data name="Page_Setting" xml:space="preserve">
-    <value>System Setting</value>
+    <value>系统设置</value>
   </data>
   <data name="Page_Setting_Admin" xml:space="preserve">
-    <value>Admin Configuration</value>
+    <value>管理员配置</value>
   </data>
   <data name="Page_Setting_Site" xml:space="preserve">
-    <value>Site Configuration</value>
+    <value>站点配置</value>
   </data>
   <data name="Page_SignOut" xml:space="preserve">
-    <value>SignOut</value>
+    <value>登出</value>
   </data>
   <data name="Validate_Field_Required" xml:space="preserve">
-    <value>{0} is required.</value>
+    <value>{0} 是必填项</value>
   </data>
   <data name="Validate_Field_StringLength" xml:space="preserve">
-    <value>The field of {0} has limited in {1} length of string</value>
+    <value>字段 {0} 限制的长度在 {1} 个字符以内</value>
   </data>
 </root>
