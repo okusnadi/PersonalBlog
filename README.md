@@ -37,10 +37,10 @@ Using the command bellow to publish application
 and use the command to run this application after publish
 > dotnet PersonalBlog.App.dll
 
-### Modify `appsettings.json` to configure your application
-Open the `appsettings.json` in the root path, you will see the json format like this:
+### Modify `Data\settings.json` to configure your application
+Open the `Data\settings.json` from the root path, you will see the json format like this:
 ```json
-"BlogSettings": {
+ {
     "Title": "PersnalBlog", //The title of blog
     "Description": "A personal blog by .NET CORE   Blazor.",//The description of blog
     "UserName": "admin", //username of admin
