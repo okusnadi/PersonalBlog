@@ -43,12 +43,10 @@ Open the `appsettings.json` in the root path, you will see the json format like 
 "BlogSettings": {
     "Title": "PersnalBlog", //The title of blog
     "Description": "A personal blog by .NET CORE   Blazor.",//The description of blog
-    "Categories": [ //the categories while edit post
-      "Ungroup"
-    ],
     "UserName": "admin", //username of admin
     "Password": "123456",//password of admin
     "AppSecret": "oi23intf0924hgfowirgw0293rf" // secret key for jwt authentication, do not update!!!
+    "Culture":"en-us", support localization
   }
 ```
 **Restart application after save changes**
